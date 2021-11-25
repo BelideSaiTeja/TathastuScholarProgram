@@ -1,0 +1,120 @@
+import turtle
+import winsound
+
+# screen set up
+wn=turtle.Screen()
+wn.title("Pong")
+wn.bgcolor("pink")
+wn.setup(width=800,height=600)
+wn.tracer(0)
+
+# paddle a set up
+padle_a=turtle.Turtle()
+padle_a.speed(0)
+padle_a.shape("square")
+padle_a.color("black")
+padle_a.shapesize(stretch_wid=5,stretch_len=1)
+padle_a.penup()
+padle_a.goto(-350,0)
+
+# padle b set up
+padle_b=turtle.Turtle()
+padle_b.speed(0)
+padle_b.shape("square")
+padle_b.color("black")
+padle_b.shapesize(stretch_wid=5,stretch_len=1)
+padle_b.penup()
+padle_b.goto(350,0)
+
+# ball set up
+ball=turtle.Turtle()
+ball.speed(0)
+ball.shape("square")
+ball.color("green")
+ball.penup()
+ball.goto(0,0)
+ball.dx=.2
+ball.dy=.2
+
+# pen setup
+pen=turtle.Turtle()
+pen.speed(0)
+pen.color('blue')
+pen.penup()
+pen.hideturtle()
+pen.goto(0,260)
+pen.write("Player A: 0  Player B: 0",align='center',font=("courier",24,"normal"))
+
+# initializing scores
+score_a=0
+score_b=0
+
+# padle a movement
+def padle_a_up():
+    y=padle_a.ycor()
+    y+=20
+    padle_a.sety(y)
+
+def padle_a_down():
+    y=padle_a.ycor()
+    y-=20
+    padle_a.sety(y)
+
+# padle b movement
+def padle_b_up():
+    y=padle_b.ycor()
+    y=y+20
+    padle_b.sety(y)
+
+def padle_b_down():
+    y=padle_b.ycor()
+    y=y-20
+    padle_b.sety(y)
+
+wn.listen()
+wn.onkeypress(padle_a_up,"7")     # padle a press 7 to move up
+wn.onkeypress(padle_a_down,"1")   # padle a press 1 to move down
+wn.onkeypress(padle_b_up,"9")     # padle b press 9 to move up
+wn.onkeypress(padle_b_down,"3")   # padle b press 3 to move down
+
+while True:
+    wn.update()
+
+# movement of ball
+
+    ball.setx(ball.xcor()+ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
+
+# border checking
+    if ball.ycor() > 290:
+        ball.sety(290)
+        ball.dy *=-1
+        winsound.PlaySound("bounce.wav",winsound.SND_ASYNC)
+    if ball.ycor() < -290:
+        ball.sety(-290)
+        ball.dy *=-1
+        winsound.PlaySound("bounce.wav", winsound.SND_ASYNC)
+    if ball.xcor() > 390:
+        ball.goto(0,0)
+        ball.dx *=-1
+        score_a+=1
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align='center', font=("courier", 24, "normal"))
+
+    if ball.xcor() < -390:
+        ball.goto(0,0)
+        ball.dx *=-1
+        score_b+=1
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align='center', font=("courier", 24, "normal"))
+
+    # ball and padle interaction
+    if (ball.xcor()>340 and ball.xcor()<350) and (ball.ycor()<padle_b.ycor()+40 and ball.ycor()>padle_b.ycor()-40):
+        ball.setx(340)
+        ball.dx *=-1
+        winsound.PlaySound("bounce.wav", winsound.SND_ASYNC)
+    if (ball.xcor()<-340 and ball.xcor()>-350) and (ball.ycor()<padle_a.ycor()+40 and ball.ycor()>padle_a.ycor()-40):
+        ball.setx(-340)
+        ball.dx *=-1
+        winsound.PlaySound("bounce.wav", winsound.SND_ASYNC)
+
